@@ -59,13 +59,21 @@
 
 -(void)loadFromURLString:(NSString *)urlString
 {
-    if (!urlString) {        
-        NSLog(@"image url: %@",urlString);
+    if (!urlString || [[NSNull null] isEqual:urlString]) {                
+        NSLog(@"url: %@",urlString);
         return;
     }
     
-    NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    [self loadFromURL:url];
+    NSURL *url;
+    @try {
+        url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    }
+    @catch (NSException *exception) {        
+        NSLog(@"exception: %@", [exception reason]);
+    }
+    @finally {
+        [self loadFromURL:url];        
+    }
 }
 
 -(void)loadFromURL:(NSURL *)url
